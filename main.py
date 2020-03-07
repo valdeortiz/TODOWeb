@@ -1,10 +1,13 @@
 from flask import Flask, flash, url_for,request,make_response, session, redirect, render_template
 from flask_bootstrap import Bootstrap
+from flask_login import login_required, current_user
 import unittest
+
 
 from app import create_app
 from app.forms import LoginForm
 from app.firestone_service import get_users, get_todos
+
 
 app = create_app()
 
@@ -29,9 +32,11 @@ def index():
 	return response
 
 @app.route("/hello", methods=['GET'])
+@login_required
 def hello():
 	user_ip = session.get("user_ip")
-	username = session.get('username')
+	username = current_user.id
+	
 	context = {
 		"user_ip": user_ip,
 		"todos": get_todos(user_id=username),
