@@ -4,10 +4,9 @@ import unittest
 
 from app import create_app
 from app.forms import LoginForm
+from app.firestone_service import get_users, get_todos
 
 app = create_app()
-
-todos = ['comprar cafe', 'comprar', 'enviar producto']
 
 @app.cli.command()
 def test():
@@ -32,13 +31,17 @@ def index():
 @app.route("/hello", methods=['GET'])
 def hello():
 	user_ip = session.get("user_ip")
-	# login_form = LoginForm()
 	username = session.get('username')
 	context = {
 		"user_ip": user_ip,
-		"todos": todos,
+		"todos": get_todos(user_id=username),
 		'username': username
 	}
 	
+	users = get_users()
+	for user in users:
+		print(user.id)
+		print(user.to_dict()['password'])
+
 	return render_template("hello.html", **context)
 
